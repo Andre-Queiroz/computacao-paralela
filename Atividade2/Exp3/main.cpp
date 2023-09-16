@@ -7,24 +7,24 @@ int main(int argc, char **argv)
 {
     int rank, size, i;
     int tag = 1010;
+    int somaGeral = 0;
 
-    MPI_Status status;
-    int msg = 12345;
+    int localValue;
 
     MPI_Init(&argc, &argv);
 
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    localValue = rank * 100;
+
+    MPI_Reduce(&localValue, &somaGeral, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
     if (rank == 0)
     {
-        MPI_Bcast(&msg, 1, MPI_INT, rank, MPI_COMM_WORLD);
+        cout << "Resultado: " << somaGeral << endl;
     }
-    else
-    {
-        MPI_Bcast(&msg, 1, MPI_INT, rank, MPI_COMM_WORLD);
-        cout << "\nInteiro recebido: " << msg << endl;
-    }
+
     MPI_Finalize();
     return 0;
 }
